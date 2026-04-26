@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: npm run start:prod
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    command: npm start
+    restart: always
+
+  postgres:
+    restart: always
+
+  redis:
+    restart: always
+
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always

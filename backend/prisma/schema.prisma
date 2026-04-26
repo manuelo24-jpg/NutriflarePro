@@ -1,0 +1,216 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ContentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MuscleGroup {
+  CHEST
+  BACK
+  LEGS
+  SHOULDERS
+  ARMS
+  CORE
+  GLUTES
+  FULL_BODY
+  CARDIO
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  SNACK
+  DINNER
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String    @unique
+  passwordHash  String
+  role          Role      @default(USER)
+  avatarUrl     String?
+  bio           String?
+  isBlocked     Boolean   @default(false)
+  blockedUntil  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  refreshTokens RefreshToken[]
+  routines      Routine[]
+  mealPlans     MealPlan[]
+  progressLogs  ProgressLog[]
+  progressGoals ProgressGoal[]
+  ratings       Rating[]
+  submittedExercises Exercise[] @relation("SubmittedBy")
+  submittedDishes    Dish[]     @relation("SubmittedBy")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Exercise {
+  id            String        @id @default(cuid())
+  name          String
+  description   String?
+  muscleGroup   MuscleGroup
+  difficulty    Int           @default(1) // 1-5
+  videoUrl      String?
+  imageUrl      String?
+  status        ContentStatus @default(PENDING)
+  isDefault     Boolean       @default(false) // ejercicios de sistema
+  submittedById String?
+  submittedBy   User?         @relation("SubmittedBy", fields: [submittedById], references: [id])
+  createdAt     DateTime      @default(now())
+
+  routineExercises RoutineExercise[]
+}
+
+model Routine {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  dayOfWeek   DayOfWeek
+  isPublic    Boolean   @default(false)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  exercises RoutineExercise[]
+  ratings   Rating[]          @relation("RoutineRatings")
+}
+
+model RoutineExercise {
+  id         String   @id @default(cuid())
+  routineId  String
+  routine    Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  sets       Int
+  reps       Int
+  restSeconds Int?
+  order      Int
+
+  @@unique([routineId, order])
+}
+
+model Dish {
+  id            String        @id @default(cuid())
+  name          String
+  description   String?
+  calories      Int?
+  protein       Float?        // gramos
+  carbs         Float?
+  fat           Float?
+  imageUrl      String?
+  mealType      MealType      // tipo sugerido
+  status        ContentStatus @default(PENDING)
+  isDefault     Boolean       @default(false)
+  submittedById String?
+  submittedBy   User?         @relation("SubmittedBy", fields: [submittedById], references: [id])
+  createdAt     DateTime      @default(now())
+
+  mealPlanItems MealPlanItem[]
+}
+
+model MealPlan {
+  id          String    @id @default(cuid())
+  name        String
+  dayOfWeek   DayOfWeek
+  isPublic    Boolean   @default(false)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  items   MealPlanItem[]
+  ratings Rating[]       @relation("MealPlanRatings")
+}
+
+model MealPlanItem {
+  id         String   @id @default(cuid())
+  mealPlanId String
+  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  dishId     String
+  dish       Dish     @relation(fields: [dishId], references: [id])
+  mealType   MealType
+  quantity   Float    @default(1) // porciones
+
+  @@unique([mealPlanId, dishId, mealType])
+}
+
+model ProgressGoal {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weightKg     Float?
+  bodyFatPct   Float?
+  sleepHours   Float?
+  waterLiters  Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ProgressLog {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
+  weightKg      Float?
+  bodyFatPct    Float?
+  sleepHours    Float?
+  waterLiters   Float?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+model Rating {
+  id         String   @id @default(cuid())
+  value      Int      // 1-5
+  comment    String?
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  routineId  String?
+  routine    Routine? @relation("RoutineRatings", fields: [routineId], references: [id], onDelete: Cascade)
+  mealPlanId String?
+  mealPlan   MealPlan? @relation("MealPlanRatings", fields: [mealPlanId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, routineId])
+  @@unique([userId, mealPlanId])
+}
