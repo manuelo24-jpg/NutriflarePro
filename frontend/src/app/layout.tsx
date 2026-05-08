@@ -5,8 +5,9 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'NutriFlare',
-  description: 'Health and fitness web application',
+  title: 'NutriFlare — Fitness y Nutrición todo en uno',
+  description:
+    'Crea rutinas de entrenamiento, planifica tu alimentación semanal y registra tu progreso corporal. Tu plataforma de fitness y nutrición gratuita.',
 };
 
 export default function RootLayout({
