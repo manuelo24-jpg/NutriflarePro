@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER:-nutriflare}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
-      POSTGRES_DB: ${DB_NAME:-nutriflare}
+      POSTGRES_DB: ${DB_NAME:-nutriflare_db}
     ports:
       - "5432:5432"
     volumes:
