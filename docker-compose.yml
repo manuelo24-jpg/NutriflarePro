@@ -59,6 +59,8 @@ services:
       dockerfile: Dockerfile
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost/api}
+      HOSTNAME: "0.0.0.0"
+      PORT: "3000"
     depends_on:
       - backend
     volumes:
@@ -66,7 +68,7 @@ services:
       - /app/node_modules
     ports:
       - "3000:3000"
-    command: npm run dev
+    command: npx next dev -H 0.0.0.0 -p 3000
 
   nginx:
     image: nginx:alpine
