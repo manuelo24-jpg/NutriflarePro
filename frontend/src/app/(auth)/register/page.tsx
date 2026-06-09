@@ -16,6 +16,7 @@ const registerSchema = z.object({
 });
 
 export default function RegisterPage() {
+  console.log("RegisterPage render");
   const router = useRouter();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const [error, setError] = useState("");
@@ -27,6 +28,7 @@ export default function RegisterPage() {
   });
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
+    console.log("onSubmit triggered with values:", values);
     setIsLoading(true);
     setError("");
     try {

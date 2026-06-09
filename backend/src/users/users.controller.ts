@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { UpdateUserDto, ChangePasswordDto } from './dto/users.dto';
 
 @UseGuards(JwtAuthGuard)
-@Controller('api/users')
+@Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

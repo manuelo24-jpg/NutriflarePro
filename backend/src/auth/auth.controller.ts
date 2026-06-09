@@ -4,7 +4,7 @@ import { RegisterDto, LoginDto } from './dto/auth.dto';
 import type { Response, Request } from 'express';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
