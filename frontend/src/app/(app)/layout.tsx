@@ -33,19 +33,41 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { logout, user } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   // Check auth
   useEffect(() => {
+    let isMounted = true;
     const checkAuth = async () => {
       try {
         const res = await api.get("/users/me");
-        useAuthStore.getState().setUser(res.data);
+        if (isMounted) {
+          useAuthStore.getState().setUser(res.data);
+          setIsCheckingAuth(false);
+        }
       } catch (err) {
-        router.push("/login");
+        if (isMounted) {
+          logout();
+          router.push("/login");
+        }
       }
     };
     checkAuth();
-  }, [pathname, router]);
+    return () => { isMounted = false; };
+  }, [pathname, router, logout]);
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <div className="relative flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.4)] animate-pulse">
+            <Flame className="w-6 h-6 text-primary-foreground" />
+          </div>
+          <p className="text-sm font-medium text-muted-foreground animate-pulse">Cargando NutriFlare...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleLogout = async () => {
     try {

@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
+import { ProgressModule } from './progress/progress.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RedisModule } from './redis/redis.module';
     RedisModule,
     UsersModule,
     AuthModule,
+    ProgressModule,
   ],
   controllers: [AppController],
   providers: [AppService],

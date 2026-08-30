@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import api from "@/lib/axios";
 import Link from "next/link";
@@ -19,6 +19,14 @@ export default function LoginPage() {
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // If user is logged in, redirect to dashboard
+    api.get("/users/me").then((res) => {
+      useAuthStore.getState().setUser(res.data);
+      router.push("/dashboard");
+    }).catch(() => {});
+  }, [router]);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),

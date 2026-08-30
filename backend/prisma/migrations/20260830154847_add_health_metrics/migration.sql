@@ -1,0 +1,24 @@
+-- AlterTable
+ALTER TABLE "ProgressGoal" ADD COLUMN     "armCm" DOUBLE PRECISION,
+ADD COLUMN     "caloriesBurned" INTEGER,
+ADD COLUMN     "chestCm" DOUBLE PRECISION,
+ADD COLUMN     "dailySteps" INTEGER,
+ADD COLUMN     "hipCm" DOUBLE PRECISION,
+ADD COLUMN     "muscleMassKg" DOUBLE PRECISION,
+ADD COLUMN     "thighCm" DOUBLE PRECISION,
+ADD COLUMN     "waistCm" DOUBLE PRECISION;
+
+-- AlterTable
+ALTER TABLE "ProgressLog" ADD COLUMN     "armCm" DOUBLE PRECISION,
+ADD COLUMN     "caloriesBurned" INTEGER,
+ADD COLUMN     "chestCm" DOUBLE PRECISION,
+ADD COLUMN     "dailySteps" INTEGER,
+ADD COLUMN     "diastolicBp" INTEGER,
+ADD COLUMN     "energyLevel" INTEGER,
+ADD COLUMN     "hipCm" DOUBLE PRECISION,
+ADD COLUMN     "muscleMassKg" DOUBLE PRECISION,
+ADD COLUMN     "restingHeartRate" INTEGER,
+ADD COLUMN     "stressLevel" INTEGER,
+ADD COLUMN     "systolicBp" INTEGER,
+ADD COLUMN     "thighCm" DOUBLE PRECISION,
+ADD COLUMN     "waistCm" DOUBLE PRECISION;

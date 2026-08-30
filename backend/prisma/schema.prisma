@@ -174,28 +174,49 @@ model MealPlanItem {
 }
 
 model ProgressGoal {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  weightKg     Float?
-  bodyFatPct   Float?
-  sleepHours   Float?
-  waterLiters  Float?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weightKg         Float?
+  bodyFatPct       Float?
+  muscleMassKg     Float?
+  chestCm          Float?
+  waistCm          Float?
+  hipCm            Float?
+  armCm            Float?
+  thighCm          Float?
+  sleepHours       Float?
+  waterLiters      Float?
+  dailySteps       Int?
+  caloriesBurned   Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model ProgressLog {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date          DateTime @db.Date
-  weightKg      Float?
-  bodyFatPct    Float?
-  sleepHours    Float?
-  waterLiters   Float?
-  notes         String?
-  createdAt     DateTime @default(now())
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date             DateTime @db.Date
+  weightKg         Float?
+  bodyFatPct       Float?
+  muscleMassKg     Float?
+  chestCm          Float?
+  waistCm          Float?
+  hipCm            Float?
+  armCm            Float?
+  thighCm          Float?
+  sleepHours       Float?
+  waterLiters      Float?
+  dailySteps       Int?
+  caloriesBurned   Int?
+  restingHeartRate Int?
+  systolicBp       Int?
+  diastolicBp      Int?
+  energyLevel      Int?     // 1-10
+  stressLevel      Int?     // 1-10
+  notes            String?
+  createdAt        DateTime @default(now())
 
   @@unique([userId, date])
 }
