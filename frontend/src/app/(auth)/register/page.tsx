@@ -22,11 +22,13 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // If user is logged in, redirect to dashboard
-    api.get("/users/me").then((res) => {
-      useAuthStore.getState().setUser(res.data);
-      router.push("/dashboard");
-    }).catch(() => {});
+    const token = useAuthStore.getState().accessToken;
+    if (token) {
+      api.get("/users/me").then((res) => {
+        useAuthStore.getState().setUser(res.data);
+        router.push("/dashboard");
+      }).catch(() => {});
+    }
   }, [router]);
 
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -35,15 +37,21 @@ export default function RegisterPage() {
   });
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
-    console.log("onSubmit triggered with values:", values);
     setIsLoading(true);
     setError("");
     try {
       const res = await api.post("/auth/register", values);
       setAccessToken(res.data.accessToken);
+      const userRes = await api.get("/users/me");
+      useAuthStore.getState().setUser(userRes.data);
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Error al registrarse. Inténtalo de nuevo.");
+      const serverMsg = err.response?.data?.message;
+      if (serverMsg && serverMsg !== "Refresh token missing") {
+        setError(serverMsg);
+      } else {
+        setError("Error al registrarse. Por favor, inténtalo de nuevo.");
+      }
     } finally {
       setIsLoading(false);
     }

@@ -21,11 +21,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // If user is logged in, redirect to dashboard
-    api.get("/users/me").then((res) => {
-      useAuthStore.getState().setUser(res.data);
-      router.push("/dashboard");
-    }).catch(() => {});
+    const token = useAuthStore.getState().accessToken;
+    if (token) {
+      api.get("/users/me").then((res) => {
+        useAuthStore.getState().setUser(res.data);
+        router.push("/dashboard");
+      }).catch(() => {});
+    }
   }, [router]);
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -39,9 +41,16 @@ export default function LoginPage() {
     try {
       const res = await api.post("/auth/login", values);
       setAccessToken(res.data.accessToken);
+      const userRes = await api.get("/users/me");
+      useAuthStore.getState().setUser(userRes.data);
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Algo salió mal. Inténtalo de nuevo.");
+      const serverMsg = err.response?.data?.message;
+      if (serverMsg && serverMsg !== "Refresh token missing") {
+        setError(serverMsg === "Invalid credentials" ? "Email o contraseña incorrectos" : serverMsg);
+      } else {
+        setError("Email o contraseña incorrectos. Por favor, inténtalo de nuevo.");
+      }
     } finally {
       setIsLoading(false);
     }
