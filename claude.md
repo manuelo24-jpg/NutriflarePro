@@ -51,3 +51,9 @@ Para paralelizar el desarrollo, dividiremos el proyecto en **4 Dominios de Traba
 1. **Evitar solapamientos:** El Agente 3 no debe modificar el `schema.prisma` a menos que sea estrictamente necesario y se haya coordinado con el Agente 1.
 2. **Mocking inicial:** Si el Agente 3 o 4 necesitan datos para el frontend antes de que el backend esté listo, usarán mocks estáticos en el frontend.
 3. **Comunicación de Cambios Core:** Si un agente modifica una interfaz global (como un DTO, variable de entorno o un componente UI compartido), debe dejar constancia en este archivo o en el README.
+
+## 🚀 Fase 2: Post-Lanzamiento (Visión Artificial e IA)
+Una vez finalizado el desarrollo completo de la aplicación base (Fase 1), se procederá a implementar funciones avanzadas de corrección mediante inteligencia artificial:
+- **Corrección de Ejercicios:** Uso de modelos de visión artificial para analizar la postura y técnica de los usuarios.
+- **Análisis en Tiempo Real o Vídeo:** Soporte para corregir ejercicios usando la cámara en tiempo real o mediante la subida de un vídeo.
+- **Registro de Anotaciones:** El sistema generará correcciones automáticas y guardará las anotaciones detalladas en el perfil del usuario para su revisión posterior.
