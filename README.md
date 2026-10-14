@@ -50,7 +50,15 @@ La primera vez que arranques el proyecto, ejecuta las migraciones:
 docker compose exec backend npx prisma migrate dev --name init
 ```
 
-### 5. (Opcional) Ver logs en tiempo real
+### 5. (Opcional) Eliminar usuarios activos
+
+Si deseas resetear o vaciar todos los usuarios registrados (junto con sus rutinas, planes y logs vinculados):
+
+```bash
+docker compose exec backend npm run clean:users
+```
+
+### 6. (Opcional) Ver logs en tiempo real
 
 ```bash
 # Todos los servicios
